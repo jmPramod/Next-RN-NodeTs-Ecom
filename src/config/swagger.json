@@ -1,0 +1,411 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Banking API Documentation",
+    "description": "API documentation for banking operations and note management",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local server"
+    },
+    {
+      "url": "https://production-api.example.com",
+      "description": "Production server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Endpoints for user authentication"
+    },
+    {
+      "name": "Notes",
+      "description": "Endpoints for managing notes"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User registration",
+        "description": "Creates a new user account with the provided details.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "user",
+            "description": "User registration details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RegisterUser"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "schema": {
+              "$ref": "#/definitions/RegisterUser"
+            }
+          },
+          "401": {
+            "description": "User already exists or validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "status": {
+                  "type": "integer",
+                  "example": 201
+                },
+                "message": {
+                  "type": "string",
+                  "example": "New User created"
+                },
+                "data": {
+                  "$ref": "#/definitions/RegisterUser"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User login",
+        "description": "Authenticates a user with the provided credentials (username and password).",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "login",
+            "description": "Login credentials",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User logged in successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string",
+                  "example": "JWT_TOKEN_STRING"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Invalid username or password"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/create-notes": {
+      "post": {
+        "tags": ["Notes"],
+        "summary": "Create a new note",
+        "description": "Creates a new note with subject, question, answer, and other metadata.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "note",
+            "description": "Note details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          }
+        ],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Note created successfully",
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          },
+          "400": {
+            "description": "Error creating note",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Error creating note"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get-notes/{subject}": {
+      "get": {
+        "tags": ["Notes"],
+        "summary": "Get notes by subject",
+        "description": "Fetches all notes associated with a specific subject.",
+        "parameters": [
+          {
+            "name": "subject",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Subject of the notes"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "integer",
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "description": "Limit of notes per page"
+          }
+        ],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notes fetched successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Data related to Math fetched"
+                },
+                "info": {
+                  "type": "object",
+                  "properties": {
+                    "page": { "type": "integer", "example": 1 },
+                    "totalPages": { "type": "integer", "example": 5 },
+                    "totalItems": { "type": "integer", "example": 50 }
+                  }
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Note"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Notes not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "No notes found for the given subject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get-single-notes/{id}": {
+      "get": {
+        "tags": ["Notes"],
+        "summary": "Get a single note",
+        "description": "Fetches a single note by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the note"
+          }
+        ],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Note fetched successfully",
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          },
+          "404": {
+            "description": "Note not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Note not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/update-notes/{id}": {
+      "patch": {
+        "tags": ["Notes"],
+        "summary": "Update a note",
+        "description": "Updates a specific note by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the note to be updated"
+          },
+          {
+            "in": "body",
+            "name": "note",
+            "description": "Note details to be updated",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          }
+        ],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Note updated successfully",
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          },
+          "404": {
+            "description": "Note not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Note not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/delete-notes/{id}": {
+      "delete": {
+        "tags": ["Notes"],
+        "summary": "Delete a note",
+        "description": "Deletes a specific note by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the note to be deleted"
+          }
+        ],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Note deleted successfully",
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          },
+          "404": {
+            "description": "Note not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Note not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Note": {
+      "type": "object",
+      "properties": {
+        "subject": { "type": "string", "example": "Math" },
+        "question": { "type": "string", "example": "What is the derivative of x^2?" },
+        "answer": { "type": "string", "example": "2x" },
+        "category": { "type": "string", "example": "Calculus" },
+        "createdAt": { "type": "string", "format": "date-time", "example": "2024-11-30T10:00:00Z" },
+        "updatedAt": { "type": "string", "format": "date-time", "example": "2024-11-30T10:00:00Z" }
+      }
+    },
+    "RegisterUser": {
+      "type": "object",
+      "properties": {
+        "username": { "type": "string", "example": "john_doe" },
+        "password": { "type": "string", "example": "securepassword" }
+      }
+    },
+    "LoginUser": {
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "example": "john_doe" },
+        "password": { "type": "string", "example": "securepassword" }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "JWTAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer <token>\""
+    }
+  },
+  "security": [
+    {
+      "JWTAuth": []
+    }
+  ]
+}
