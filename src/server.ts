@@ -2,7 +2,8 @@ import express from "express";
 import cors, { CorsOptions } from "cors";
 import swaggerUI from "swagger-ui-express";
 import * as swaggerDocument from "../src/config/swagger.json";
-
+import { connectMongooseDB } from "./config/db.connect";
+import { clerkMiddleware } from '@clerk/express'
 
 
 const corsOptions: CorsOptions = {
@@ -30,6 +31,7 @@ const corsOptions: CorsOptions = {
 const app = express();
 
 const runserver = () => {
+  app.use(clerkMiddleware())
   app.use(cors(corsOptions));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -37,6 +39,7 @@ const runserver = () => {
   app.get("/health", (_, res) => {
     res.json({ status: "ok" });
   });
+  connectMongooseDB()
 };
 runserver()
 export { app, runserver };
