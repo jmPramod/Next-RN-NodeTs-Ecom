@@ -33,15 +33,14 @@ const authSchema = new Schema<Auth>(
 imageUrl:{type:String},
     phone: {
       type: String,
-      unique: true,
-      required: true,
+      unique: true, 
     },
 
      address: [
       {
         state: { type: String },
-        country: { type: String, required: true },
-        pinCode: { type: Number, required: true },
+        country: { type: String,  },
+        pinCode: { type: Number, },
       },
     ],
 
@@ -54,7 +53,7 @@ imageUrl:{type:String},
       required: true,
     },
 
-    password: { type: String, required: true },
+    password: { type: String,  },
 
     isAdmin: {
       type: String,
