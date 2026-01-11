@@ -12,6 +12,7 @@ const corsOptions: CorsOptions = {
     const allowedOrigins: string[] = [
       "http://localhost:3000",
       "http://localhost:5173",
+      process.env.CLIENT_BASE_URL as string
     ];
     if (!origin) {
       callback(null, true);
