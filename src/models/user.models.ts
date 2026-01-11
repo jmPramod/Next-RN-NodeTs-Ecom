@@ -33,7 +33,7 @@ const authSchema = new Schema<Auth>(
 imageUrl:{type:String},
     phone: {
       type: String,
-      unique: true, 
+    
     },
 
      address: [
@@ -49,7 +49,7 @@ imageUrl:{type:String},
 
     email: {
       type: String,
-      unique: true,
+     
       required: true,
     },
 
@@ -74,7 +74,7 @@ imageUrl:{type:String},
 
     clerkID: {
       type: String,
-      unique: true,
+      
       sparse: true, // allows multiple null values
     },
   },
