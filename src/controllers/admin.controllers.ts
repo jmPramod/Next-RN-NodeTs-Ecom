@@ -78,7 +78,7 @@ export const getProductController = async (
       .limit(limit)
       .sort({ createdAt: -1 });
     res.status(200).json({
-      message: "Product created successfully",
+      message: "Product Fetched successfully",
       product: product,
       statusCode: 200,
     });

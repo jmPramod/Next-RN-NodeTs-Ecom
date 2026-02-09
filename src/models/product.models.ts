@@ -8,7 +8,7 @@ export interface ProductSchemaProps extends mongoose.Document{
     category:string;
     images:{ImageUrl:string,PublicId:string}[];
     averageRating:number;
-    totalRevinue:number;
+    totalReview:number;
 } 
 
 const productSchema=new mongoose.Schema<ProductSchemaProps>({
@@ -19,7 +19,7 @@ stock:{type:Number,required:true},
 category:{type:String,required:true},
 images:[{type:{ImageUrl:String,PublicId:String},required:true}],
 averageRating:{type:Number,default:0,min:0,max:5},
-totalRevinue:{type:Number,default:0,min:0},
+totalReview:{type:Number,default:0,min:0},
 },{
     timestamps:true
 })

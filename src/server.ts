@@ -9,6 +9,8 @@ import { fuuncction, inngest } from "./config/inngest";
 import { adminRoutes } from "./routes/admin.routes";
 import { userRoutes } from "./routes/user.routes";
 import { orderRoutes } from "./routes/orders.routes";
+import { reviewRoutes } from "./routes/review.routes";
+import { productRoutes } from "./routes/product.order";
 
 const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
@@ -45,6 +47,10 @@ const runserver = () => {
   app.use("/api",adminRoutes)
   app.use("/api",userRoutes)
   app.use("/api",orderRoutes)
+  
+  app.use("/api",reviewRoutes)
+  
+  app.use("/api",productRoutes)
   
   app.get("/health", (_, res) => {
     res.json({ status: "ok" });
