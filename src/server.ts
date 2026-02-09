@@ -8,6 +8,7 @@ import {serve} from 'inngest/express'
 import { fuuncction, inngest } from "./config/inngest";
 import { adminRoutes } from "./routes/admin.routes";
 import { userRoutes } from "./routes/user.routes";
+import { orderRoutes } from "./routes/orders.routes";
 
 const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
@@ -43,6 +44,7 @@ const runserver = () => {
   app.use('/api/inngest',serve({client:inngest,functions:fuuncction}))
   app.use("/api",adminRoutes)
   app.use("/api",userRoutes)
+  app.use("/api",orderRoutes)
   
   app.get("/health", (_, res) => {
     res.json({ status: "ok" });

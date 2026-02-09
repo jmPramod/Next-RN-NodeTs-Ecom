@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { Auth } from "../models/user.models";
+import userModels, { Auth } from "../models/user.models";
 import { CustomError } from "../utils/custom.error";
 
 interface AuthRequest extends Request {
@@ -154,8 +154,12 @@ export const getwishlist = async (
 ) => {
   try {
     // return;
-
-const user=req.user
+if(!req.user){
+    
+           return next(new CustomError("User is not found", 400));
+    
+}
+const user=await userModels.findById(req.user._id).populate("wishlist")
 
 res.status(200).json({
       message: "Product created successfully",

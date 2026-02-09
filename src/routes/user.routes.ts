@@ -11,5 +11,5 @@ userRoutes.delete('/address/:addressId',protectedRoutes,deleteAddress )
 //wishlist route
 userRoutes.post('/wishlist',protectedRoutes,addwishlist)
 userRoutes.get('/wishlist',protectedRoutes,getwishlist) 
-userRoutes.delete('/wishlist/:wishlistId',protectedRoutes,deletewishlist )
+userRoutes.delete('/wishlist/:productId',protectedRoutes,deletewishlist )
   
