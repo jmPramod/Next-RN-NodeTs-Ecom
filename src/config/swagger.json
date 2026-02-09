@@ -1,411 +1,341 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Banking API Documentation",
-    "description": "API documentation for banking operations and note management",
+    "title": "E-Commerce API",
+    "description": "Complete API documentation for Admin, Products, Cart, Orders, Reviews and User modules",
     "version": "1.0.0"
   },
-  "servers": [
-    {
-      "url": "http://localhost:3000",
-      "description": "Local server"
-    },
-    {
-      "url": "https://production-api.example.com",
-      "description": "Production server"
-    }
-  ],
-  "tags": [
-    {
-      "name": "Authentication",
-      "description": "Endpoints for user authentication"
-    },
-    {
-      "name": "Notes",
-      "description": "Endpoints for managing notes"
-    }
-  ],
-  "paths": {
-    "/register": {
-      "post": {
-        "tags": ["Authentication"],
-        "summary": "User registration",
-        "description": "Creates a new user account with the provided details.",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "user",
-            "description": "User registration details",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/RegisterUser"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "User created successfully",
-            "schema": {
-              "$ref": "#/definitions/RegisterUser"
-            }
-          },
-          "401": {
-            "description": "User already exists or validation error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "Success": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "status": {
-                  "type": "integer",
-                  "example": 201
-                },
-                "message": {
-                  "type": "string",
-                  "example": "New User created"
-                },
-                "data": {
-                  "$ref": "#/definitions/RegisterUser"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/login": {
-      "post": {
-        "tags": ["Authentication"],
-        "summary": "User login",
-        "description": "Authenticates a user with the provided credentials (username and password).",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "login",
-            "description": "Login credentials",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/LoginUser"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User logged in successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "token": {
-                  "type": "string",
-                  "example": "JWT_TOKEN_STRING"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Invalid credentials",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Invalid username or password"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/create-notes": {
-      "post": {
-        "tags": ["Notes"],
-        "summary": "Create a new note",
-        "description": "Creates a new note with subject, question, answer, and other metadata.",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "note",
-            "description": "Note details",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Note"
-            }
-          }
-        ],
-        "security": [
-          {
-            "JWTAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Note created successfully",
-            "schema": {
-              "$ref": "#/definitions/Note"
-            }
-          },
-          "400": {
-            "description": "Error creating note",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Error creating note"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/get-notes/{subject}": {
-      "get": {
-        "tags": ["Notes"],
-        "summary": "Get notes by subject",
-        "description": "Fetches all notes associated with a specific subject.",
-        "parameters": [
-          {
-            "name": "subject",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "Subject of the notes"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "type": "integer",
-            "description": "Page number for pagination"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "integer",
-            "description": "Limit of notes per page"
-          }
-        ],
-        "security": [
-          {
-            "JWTAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Notes fetched successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Data related to Math fetched"
-                },
-                "info": {
-                  "type": "object",
-                  "properties": {
-                    "page": { "type": "integer", "example": 1 },
-                    "totalPages": { "type": "integer", "example": 5 },
-                    "totalItems": { "type": "integer", "example": 50 }
-                  }
-                },
-                "data": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/Note"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Notes not found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "No notes found for the given subject"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/get-single-notes/{id}": {
-      "get": {
-        "tags": ["Notes"],
-        "summary": "Get a single note",
-        "description": "Fetches a single note by its ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "ID of the note"
-          }
-        ],
-        "security": [
-          {
-            "JWTAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Note fetched successfully",
-            "schema": {
-              "$ref": "#/definitions/Note"
-            }
-          },
-          "404": {
-            "description": "Note not found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Note not found"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/update-notes/{id}": {
-      "patch": {
-        "tags": ["Notes"],
-        "summary": "Update a note",
-        "description": "Updates a specific note by its ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "ID of the note to be updated"
-          },
-          {
-            "in": "body",
-            "name": "note",
-            "description": "Note details to be updated",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Note"
-            }
-          }
-        ],
-        "security": [
-          {
-            "JWTAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Note updated successfully",
-            "schema": {
-              "$ref": "#/definitions/Note"
-            }
-          },
-          "404": {
-            "description": "Note not found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Note not found"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/delete-notes/{id}": {
-      "delete": {
-        "tags": ["Notes"],
-        "summary": "Delete a note",
-        "description": "Deletes a specific note by its ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "ID of the note to be deleted"
-          }
-        ],
-        "security": [
-          {
-            "JWTAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Note deleted successfully",
-            "schema": {
-              "$ref": "#/definitions/Note"
-            }
-          },
-          "404": {
-            "description": "Note not found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Note not found"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "definitions": {
-    "Note": {
-      "type": "object",
-      "properties": {
-        "subject": { "type": "string", "example": "Math" },
-        "question": { "type": "string", "example": "What is the derivative of x^2?" },
-        "answer": { "type": "string", "example": "2x" },
-        "category": { "type": "string", "example": "Calculus" },
-        "createdAt": { "type": "string", "format": "date-time", "example": "2024-11-30T10:00:00Z" },
-        "updatedAt": { "type": "string", "format": "date-time", "example": "2024-11-30T10:00:00Z" }
-      }
-    },
-    "RegisterUser": {
-      "type": "object",
-      "properties": {
-        "username": { "type": "string", "example": "john_doe" },
-        "password": { "type": "string", "example": "securepassword" }
-      }
-    },
-    "LoginUser": {
-      "type": "object",
-      "properties": {
-        "email": { "type": "string", "example": "john_doe" },
-        "password": { "type": "string", "example": "securepassword" }
-      }
-    }
-  },
+  "host": "https://next-rn-node-ts-ecom.vercel.app",
+  "basePath": "/api",
+  "schemes": ["http","https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+
   "securityDefinitions": {
     "JWTAuth": {
       "type": "apiKey",
       "name": "Authorization",
       "in": "header",
-      "description": "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer <token>\""
+      "description": "Bearer <JWT_TOKEN>"
     }
   },
-  "security": [
-    {
-      "JWTAuth": []
+
+  "tags": [
+    { "name": "Admin" },
+    { "name": "Products" },
+    { "name": "Cart" },
+    { "name": "Orders" },
+    { "name": "Reviews" },
+    { "name": "User" }
+  ],
+
+  "paths": {
+    "/admin/products": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Create product",
+        "security": [{ "JWTAuth": [] }],
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          { "name": "name", "in": "formData", "required": true, "type": "string" },
+          { "name": "price", "in": "formData", "required": true, "type": "number" },
+          { "name": "images", "in": "formData", "type": "file", "required": false }
+        ],
+        "responses": { "201": { "description": "Product created" } }
+      },
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get all products (Admin)",
+        "security": [{ "JWTAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Products list",
+            "schema": { "type": "array", "items": { "$ref": "#/definitions/Product" } }
+          }
+        }
+      }
+    },
+
+    "/admin/products/{id}": {
+      "patch": {
+        "tags": ["Admin"],
+        "summary": "Update product",
+        "security": [{ "JWTAuth": [] }],
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" },
+          { "name": "name", "in": "formData", "type": "string" },
+          { "name": "price", "in": "formData", "type": "number" }
+        ],
+        "responses": { "200": { "description": "Product updated" } }
+      }
+    },
+
+    "/admin/orders": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get all orders",
+        "security": [{ "JWTAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Orders fetched",
+            "schema": { "type": "array", "items": { "$ref": "#/definitions/Order" } }
+          }
+        }
+      }
+    },
+
+    "/admin/orders/{orderId}/status": {
+      "patch": {
+        "tags": ["Admin"],
+        "summary": "Update order status",
+        "security": [{ "JWTAuth": [] }],
+        "parameters": [
+          { "name": "orderId", "in": "path", "required": true, "type": "string" },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "string", "example": "Delivered" }
+              }
+            }
+          }
+        ],
+        "responses": { "200": { "description": "Status updated" } }
+      }
+    },
+
+    "/admin/customer": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get all customers",
+        "security": [{ "JWTAuth": [] }],
+        "responses": { "200": { "description": "Customers fetched" } }
+      }
+    },
+
+    "/admin/stats": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get dashboard stats",
+        "security": [{ "JWTAuth": [] }],
+        "responses": { "200": { "description": "Stats fetched" } }
+      }
+    },
+
+    "/cart": {
+      "get": {
+        "tags": ["Cart"],
+        "summary": "Get cart",
+        "security": [{ "JWTAuth": [] }],
+        "responses": { "200": { "description": "Cart fetched" } }
+      },
+      "post": {
+        "tags": ["Cart"],
+        "summary": "Add item to cart",
+        "security": [{ "JWTAuth": [] }],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "cart",
+            "required": true,
+            "schema": { "$ref": "#/definitions/Cart" }
+          }
+        ],
+        "responses": { "201": { "description": "Item added" } }
+      },
+      "delete": {
+        "tags": ["Cart"],
+        "summary": "Clear cart",
+        "security": [{ "JWTAuth": [] }],
+        "responses": { "200": { "description": "Cart cleared" } }
+      }
+    },
+
+    "/cart/{productId}": {
+      "patch": {
+        "tags": ["Cart"],
+        "summary": "Update cart item",
+        "security": [{ "JWTAuth": [] }],
+        "parameters": [
+          { "name": "productId", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": { "200": { "description": "Cart updated" } }
+      },
+      "delete": {
+        "tags": ["Cart"],
+        "summary": "Delete cart item",
+        "security": [{ "JWTAuth": [] }],
+        "parameters": [
+          { "name": "productId", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": { "200": { "description": "Item removed" } }
+      }
+    },
+
+    "/order": {
+      "post": {
+        "tags": ["Orders"],
+        "summary": "Create order",
+        "security": [{ "JWTAuth": [] }],
+        "responses": { "201": { "description": "Order created" } }
+      },
+      "get": {
+        "tags": ["Orders"],
+        "summary": "Get user orders",
+        "security": [{ "JWTAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Orders fetched",
+            "schema": { "type": "array", "items": { "$ref": "#/definitions/Order" } }
+          }
+        }
+      }
+    },
+
+    "/products": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get products",
+        "security": [{ "JWTAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Products list",
+            "schema": { "type": "array", "items": { "$ref": "#/definitions/Product" } }
+          }
+        }
+      }
+    },
+
+    "/products/{id}": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get product by ID",
+        "security": [{ "JWTAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product fetched",
+            "schema": { "$ref": "#/definitions/Product" }
+          }
+        }
+      }
+    },
+
+    "/reviews": {
+      "post": {
+        "tags": ["Reviews"],
+        "summary": "Create review",
+        "security": [{ "JWTAuth": [] }],
+        "responses": { "201": { "description": "Review created" } }
+      }
+    },
+
+    "/reviews/{reviewId}": {
+      "delete": {
+        "tags": ["Reviews"],
+        "summary": "Delete review",
+        "security": [{ "JWTAuth": [] }],
+        "parameters": [
+          { "name": "reviewId", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": { "200": { "description": "Review deleted" } }
+      }
+    },
+
+    "/address": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Add address",
+        "security": [{ "JWTAuth": [] }],
+        "responses": { "201": { "description": "Address added" } }
+      },
+      "get": {
+        "tags": ["User"],
+        "summary": "Get addresses",
+        "security": [{ "JWTAuth": [] }],
+        "responses": { "200": { "description": "Addresses fetched" } }
+      }
+    },
+
+    "/address/{addressId}": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "Update address",
+        "security": [{ "JWTAuth": [] }],
+        "parameters": [
+          { "name": "addressId", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": { "200": { "description": "Address updated" } }
+      },
+      "delete": {
+        "tags": ["User"],
+        "summary": "Delete address",
+        "security": [{ "JWTAuth": [] }],
+        "parameters": [
+          { "name": "addressId", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": { "200": { "description": "Address deleted" } }
+      }
+    },
+
+    "/wishlist": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Add to wishlist",
+        "security": [{ "JWTAuth": [] }],
+        "responses": { "201": { "description": "Added to wishlist" } }
+      },
+      "get": {
+        "tags": ["User"],
+        "summary": "Get wishlist",
+        "security": [{ "JWTAuth": [] }],
+        "responses": { "200": { "description": "Wishlist fetched" } }
+      }
+    },
+
+    "/wishlist/{productId}": {
+      "delete": {
+        "tags": ["User"],
+        "summary": "Remove wishlist item",
+        "security": [{ "JWTAuth": [] }],
+        "parameters": [
+          { "name": "productId", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": { "200": { "description": "Wishlist item removed" } }
+      }
     }
-  ]
+  },
+
+  "definitions": {
+    "Product": {
+      "type": "object",
+      "properties": {
+        "_id": { "type": "string" },
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "images": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "Order": {
+      "type": "object",
+      "properties": {
+        "_id": { "type": "string" },
+        "status": { "type": "string" },
+        "total": { "type": "number" }
+      }
+    },
+    "Cart": {
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "quantity": { "type": "number" }
+      }
+    }
+  }
 }
