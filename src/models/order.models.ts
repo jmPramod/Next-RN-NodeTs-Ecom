@@ -55,7 +55,8 @@ paymentResult:{id:String,status:String},
 totalPrice:{type:Number,required:true,min:0,default:0},
 status:{type:String,enum:["pending","processed","shipped","delivered","cancelled"],default:"pending"},
 deliveredAt:{type:Date},
-shippedAt:{type:Date}
+shippedAt:{type:Date},
+
 },{
     timestamps:true
 })

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { Auth } from "../models/user.models";
 import ProductModel from "../models/product.models";
 import orderModels from "../models/order.models";
+import reviewModel from "../models/review.models";
 export interface AuthRequest extends Request {
   user?: Auth;
 }
@@ -72,33 +73,27 @@ export const getUserOrders = async (
   next: NextFunction,
 ) => {
   try {
-    const { isDefault, country, state, city, pinCode, landmark, addressLine } =
-      req.body;
-    const user = req.user;
-    if (user) {
-      if (!isDefault) {
-        user.address.forEach((add) => {
-          add.isDefault = false;
-        });
-      }
-      user.address.push({
-        isDefault: isDefault || false,
-        country,
-        state,
-        city,
-        pinCode,
-        landmark,
-        addressLine,
-      });
+    const order = await orderModels
+      .find({ clerkId: req.user?.clerkID })
+      .populate("orderItems.product")
+      .sort({ createdAt: -1 });
 
-      const addAdrs = await user.save();
+    //check if each order is revieved
+    const orderToreview = await Promise.all(
+      order.map(async (order) => {
+        const isReview = await reviewModel.findOne({ orderId: order._id });
+        return {
+          ...order.toObject(),
+          hasReview: !!isReview// isReview ? true : false,
+        };
+      }),
+    );
 
-      res.status(201).json({
-        message: "Address Added successfully",
-        product: addAdrs,
-        statusCode: 201,
-      });
-    }
+    res.status(201).json({
+      message: "Orders retrieved successfully",
+      product: {order: orderToreview },
+      statusCode: 201,
+    });
   } catch (error) {
     next(error);
   }
