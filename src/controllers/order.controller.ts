@@ -78,13 +78,17 @@ export const getUserOrders = async (
       .populate("orderItems.product")
       .sort({ createdAt: -1 });
 
+const orderIDs= order.map((order)=>order._id)
+const reviews=await reviewModel.find({orderId:{$in:orderIDs}})
+const reviewOrderId=new Set(reviews.map((review)=>review.orderID.toString()))
+
+
     //check if each order is revieved
     const orderToreview = await Promise.all(
       order.map(async (order) => {
-        const isReview = await reviewModel.findOne({ orderId: order._id });
-        return {
+          return {
           ...order.toObject(),
-          hasReview: !!isReview// isReview ? true : false,
+          hasReview:reviewOrderId.has(order._id.toString())// isReview ? true : false,
         };
       }),
     );
