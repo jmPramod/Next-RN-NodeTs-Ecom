@@ -1,2 +1,2 @@
 npm run reset-project
-# this will reset the project to simplest removing all the unnecessary package 
+# this will reset the project to simplest removing all the unnecessary package  git push --set-upstream origin mobile
